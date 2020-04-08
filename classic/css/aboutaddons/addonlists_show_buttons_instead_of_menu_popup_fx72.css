@@ -3,21 +3,67 @@
 /****************************************************************************************/
 
 
-@-moz-document  url-prefix(chrome://mozapps/content/extensions/aboutaddons.html) {
+@-moz-document url-prefix(chrome://mozapps/content/extensions/extensions.xul), url-prefix(about:addons),url-prefix(chrome://mozapps/content/extensions/aboutaddons.html) {
+
+
+	html {
+	  --addon-page-options-width: 340px;
+	}
+	
+	/* <some> locales require adjustments */
+	html[lang="de"] {
+	  --addon-page-options-width: 370px;
+	}
+	
+	html:-moz-any([lang="ru"],[lang="it"],[lang="fr"],[lang="el"]) {
+	  --addon-page-options-width: 440px;
+	}
+	
+	html[lang*="es-"] {
+	  --addon-page-options-width: 460px;
+	}
+	/**/
+	
+	addon-list[type="theme"] addon-card:not([expanded="true"]) button[data-l10n-id="enable-addon-button"]:not(.theme-enable-button),
 	.more-options-menu panel-item {
 	  background: white !important;
 	  color: black !important;
-	  margin: 0 1px;
+	  margin: 0 1px !important;
 	  border: 1px solid lightgrey !important;
+	}
+	
+	addon-list[type="theme"] addon-card:not([expanded="true"]) button[data-l10n-id="enable-addon-button"]:not(.theme-enable-button):not([badged]),
+	addon-list panel-item:not([badged]){
+	  border: 1px solid lightgrey !important;
+	}
+	
+	addon-list addon-card:not([expanded="true"]) panel-list * {
+	  background: white !important;
+	  color: black !important;
+	}
+	
+	addon-list[type="theme"] addon-card:not([expanded="true"]) button[data-l10n-id="enable-addon-button"]:not(.theme-enable-button):hover,
+	addon-list[type="theme"] addon-card:not([expanded="true"]) button[data-l10n-id="enable-addon-button"]:not(.theme-enable-button):active {
+	  border: 1px solid black !important;
 	}
 	
 	@supports -moz-bool-pref("browser.in-content.dark-mode") {
 	  @media (prefers-color-scheme: dark) {
+		addon-list addon-card:not([expanded="true"]) panel-list *,
+		addon-list[type="theme"] addon-card:not([expanded="true"]) button[data-l10n-id="enable-addon-button"]:not(.theme-enable-button),
 		.more-options-menu panel-item {
 		  background: black !important;
 		  color: white !important;
-	  }
+	    }
+		addon-list[type="theme"] addon-card:not([expanded="true"]) button[data-l10n-id="enable-addon-button"]:not(.theme-enable-button):hover,
+		addon-list[type="theme"] addon-card:not([expanded="true"]) button[data-l10n-id="enable-addon-button"]:not(.theme-enable-button):active {
+		  border: 1px solid white !important;
+		}
 	}}
+	
+	addon-list panel-item{
+	  margin: 0 1px !important;
+	}
 	
 	/* reduce size of default buttons */
 	link:-moz-any([href$="panel-item.css"],[href$="panel-list.css"]) ~ button {
@@ -26,28 +72,18 @@
 	}
 	
 	/* remove three dots button */
-	.addon.card .more-options-menu .more-options-button {
-	  visibility: hidden !important;
+	addon-card .more-options-button {
+	  display: none !important;
 	}
 
 	/* remove button icon */
-	panel-item {
+	:host([checked]),
+	panel-item[checked],
+	addon-list panel-item {
 	  --icon: unset !important;
 	}
-
+	
 	/* restore buttons */
-	addon-list .more-options-menu :-moz-any(addon-options,plugin-options) panel-list {
-	  position: relative !important;
-	  display: block !important;
-	  overflow: hidden !important;
-	  margin-top: -25px;
-	  box-shadow: none !important;
-	  background: unset !important;
-	  border: unset !important;
-	  box-shadow: unset !important;
-	  min-width: unset !important;
-	  width: unset !important;
-	}
 
 	div.arrow.top + div.list {
 	  display: flex !important;
@@ -63,6 +99,7 @@
 	  border: 1px solid Highlight !important;
 	}
 	
+	
 	panel-item[badged]::after,
 	:host([badged]) button::after,
 	link:-moz-any([href$="panel-item.css"],[href$="panel-list.css"]) ~ button::after,
@@ -74,15 +111,15 @@
 	addon-page-options panel-list {
 	  min-width: unset !important;
 	  width: auto !important;
-	  max-width: 300px !important;
+	  max-width: var(--addon-page-options-width) !important;
 	  z-index: 1000 !important;
 	}
 	
 	addon-page-options panel-list panel-item {
-	  min-width: 280px !important;
-	  width: 280px !important;
+	  min-width: calc(var(--addon-page-options-width) - 20px) !important;
+	  width: 320px !important;
 	}
-	
+		
 	.sticky-container {
 	  z-index: 1000 !important;
 	}
@@ -91,12 +128,74 @@
 	  padding-inline-start: 20px !important;
 	  padding-top: 3px !important;
 	  padding-bottom: 3px !important;
-	  min-width: 290px !important;
-	  width: 290px !important;
+	  min-width: calc(var(--addon-page-options-width) - 10px) !important;
+	  width: calc(var(--addon-page-options-width) - 10px) !important;
 	}
 
 	addon-page-options panel-list panel-item[accesskey][checked] {
 	  background: url("chrome://global/skin/icons/check.svg") 5px no-repeat !important;
+	}
+	
+	addon-list addon-card:not([expanded="true"]) panel-list {
+	  position: relative !important;
+	  display: flex !important;
+	  overflow: hidden !important;
+	  background: unset !important;
+	  border: unset !important;
+	  box-shadow: unset !important;
+	  min-width: unset !important;
+	  width: unset !important;
+	  float: right !important;
+	  right: 36px !important;
+	}
+	
+	addon-list addon-card:not([expanded="true"]) panel-list {
+	  margin-top: -48px !important;
+	}
+
+	addon-list addon-card:not([expanded="true"]) .addon.card .theme-enable-button {
+	  -moz-appearance: none !important;
+	  min-width: 20px !important;
+	  width: 20px !important;
+	  max-width: 20px !important;
+	  height: 20px !important;
+	  font-size: 0 !important;
+	  border: 1px solid !important;
+	  border-top: 3px solid !important;
+	  -moz-margin-end: 1px !important;
+	  opacity: 0.9 !important;
+	}
+	
+	addon-list addon-card:not([expanded="true"]) .addon.card .theme-enable-button:hover {
+	  cursor: pointer !important;
+	  opacity: 1.0 !important;
+	  filter: brightness(2.00) !important;
+	}
+	
+	addon-list addon-card:not([expanded="true"]) .addon.card[active="true"] .theme-enable-button {
+	  background: Highlight url("chrome://global/skin/icons/check.svg") 2px no-repeat !important;
+	}
+	
+	addon-list addon-card:not([expanded="true"]):hover .addon.card[active="true"] .theme-enable-button {
+	  background: red url("chrome://browser/skin/zoom-out.svg") 2px no-repeat !important;
+	}
+	
+	addon-list addon-card:not([expanded="true"]):hover .addon.card[active="false"] .theme-enable-button {
+	  background: green url("chrome://global/skin/icons/check.svg") 2px no-repeat !important;
+	}
+	
+	addon-list[type="theme"] addon-card:not([expanded="true"]) .card-contents{
+	  height: 40px !important;
+	}
+
+	addon-list addon-card:not([expanded="true"]) .addon.card .theme-enable-button,
+	input[type="checkbox"].toggle-button {
+	  -moz-margin-end: 8px !important;
+	}
+	
+	addon-card:not([expanded]) > .addon.card,
+	addon-card:not([expanded]) > .addon.card * {
+	  overflow: hidden !important;
 	}
 
 }
